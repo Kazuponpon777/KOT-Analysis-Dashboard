@@ -1,0 +1,358 @@
+.app-container {
+  min-height: 100vh;
+  background-color: var(--bg-main, #f3f4f6);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: var(--text-primary, #111827);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================================
+   CSS Custom Properties (Light / Default)
+   ======================================== */
+:root {
+  --bg-main: #f3f4f6;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f9fafb;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --border-light: #f3f4f6;
+  --border-medium: #e5e7eb;
+  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --accent-blue: #3b82f6;
+  --accent-indigo: #6366f1;
+  --accent-green: #10b981;
+  --accent-red: #dc2626;
+  --accent-yellow: #f59e0b;
+}
+
+/* ========================================
+   Dark Mode
+   ======================================== */
+[data-theme="dark"] {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-alt: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --border-light: #334155;
+  --border-medium: #475569;
+  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+}
+
+/* Dark mode overrides for inline-styled components */
+[data-theme="dark"] section>div {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] header {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] table th {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] table td {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] button {
+  background-color: var(--bg-card-alt) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+}
+
+/* ========================================
+   Theme Toggle Button
+   ======================================== */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-medium);
+  background-color: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   Print Button
+   ======================================== */
+.logout-button {
+  position: fixed;
+  top: 16px;
+  right: 160px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: 1px solid var(--border-medium);
+  background-color: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  transform: scale(1.05);
+  background-color: var(--accent-red);
+  border-color: var(--accent-red);
+}
+
+.print-button {
+  position: fixed;
+  top: 16px;
+  right: 70px;
+  z-index: 1000;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1px solid var(--border-medium);
+  background-color: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.print-button:hover {
+  transform: scale(1.05);
+  background-color: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+
+/* ========================================
+   Responsive: Tablet (768px)
+   ======================================== */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0;
+  }
+
+  /* Override dashboard max-width and padding */
+  .app-container>div {
+    padding: 20px 16px !important;
+    max-width: 100% !important;
+  }
+
+  /* Stack the 2-column compliance grid */
+  .app-container>div>div>section>div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Smaller header text */
+  .app-container h1 {
+    font-size: 2.5rem !important;
+  }
+
+  /* Month navigation */
+  .app-container header>div:first-child {
+    position: relative !important;
+    transform: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 16px !important;
+  }
+}
+
+/* ========================================
+   Responsive: Mobile (480px)
+   ======================================== */
+@media (max-width: 480px) {
+  .app-container>div {
+    padding: 12px 10px !important;
+  }
+
+  .app-container h1 {
+    font-size: 2rem !important;
+  }
+
+  .app-container h3 {
+    font-size: 1rem !important;
+  }
+
+  .theme-toggle {
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .print-button {
+    top: 8px;
+    right: 52px;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .theme-toggle,
+  .print-button {
+    display: none !important;
+  }
+
+  .app-container {
+    background-color: #fff !important;
+  }
+
+  .app-container>div {
+    padding: 10px !important;
+    max-width: 100% !important;
+  }
+
+  section>div {
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+
+  header button {
+    display: none !important;
+  }
+
+  /* Ensure charts are visible */
+  .recharts-responsive-container {
+    page-break-inside: avoid;
+  }
+}
+
+/* ========================================
+   Employee Detail Modal
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 30px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--bg-card-alt);
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.modal-close:hover {
+  background-color: var(--accent-red);
+  color: #fff;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   Clickable Employee Names
+   ======================================== */
+.employee-name-link {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.employee-name-link:hover {
+  color: var(--accent-blue) !important;
+  text-decoration: underline;
+}
