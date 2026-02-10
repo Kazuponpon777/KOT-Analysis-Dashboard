@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 const session = require('express-session');
 const path = require('path');
+const { sendReport } = require('./emailReport');
 require('dotenv').config();
 
 const app = express();
@@ -60,6 +61,10 @@ const requireAuth = (req, res, next) => {
     if (req.path.startsWith('/auth/') || req.path === '/health') {
         return next();
     }
+    // Allow admin API invocation with password in header (for GitHub Actions)
+    if (req.path === '/admin/send-report' && req.headers.authorization === `Bearer ${DASHBOARD_PASSWORD}`) {
+        return next();
+    }
     if (!req.session.authenticated) {
         return res.status(401).json({ error: '認証が必要です' });
     }
@@ -67,6 +72,20 @@ const requireAuth = (req, res, next) => {
 };
 
 app.use('/api', requireAuth);
+
+// ================================================================
+// Admin API (Triggered by GitHub Actions)
+// ================================================================
+app.post('/api/admin/send-report', async (req, res) => {
+    console.log('[Admin] Manual trigger received for email report.');
+    try {
+        await sendReport();
+        res.json({ success: true, message: 'Email report triggered.' });
+    } catch (e) {
+        console.error('[Admin] Failed to send report:', e);
+        res.status(500).json({ error: e.message });
+    }
+});
 
 // ================================================================
 // KING OF TIME API Configuration

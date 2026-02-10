@@ -6,8 +6,6 @@ const nodemailer = require('nodemailer');
 const axios = require('axios');
 require('dotenv').config({ path: __dirname + '/.env' });
 
-const API_BASE = `http://localhost:${process.env.PORT || 3001}/api`;
-
 // ================================================================
 // メール送信設定
 // ================================================================
@@ -21,8 +19,23 @@ const createTransporter = () => {
             pass: process.env.SMTP_PASS,
         },
         tls: {
-            rejectUnauthorized: false, // 共有ホスティング証明書の不一致を許容
+            rejectUnauthorized: false,
         },
+    });
+};
+
+const KOT_API_BASE_URL = 'https://api.kingtime.jp/v1.0';
+const KOT_API_KEY = process.env.KOT_API_KEY;
+
+// Helper for KOT API calls
+const callKotApi = async (endpoint, params = {}) => {
+    if (!KOT_API_KEY) throw new Error('KOT_API_KEY is not set');
+    return axios.get(`${KOT_API_BASE_URL}${endpoint}`, {
+        params,
+        headers: {
+            'Authorization': `Bearer ${KOT_API_KEY}`,
+            'Content-Type': 'application/json'
+        }
     });
 };
 
@@ -39,8 +52,8 @@ const fetchData = async () => {
     let fiscalYearStartYear = period.year;
     if (period.month < 4) fiscalYearStartYear -= 1;
 
-    // Fetch employees
-    const empRes = await axios.get(`${API_BASE}/employees`);
+    // Fetch employees from KOT API
+    const empRes = await callKotApi('/employees');
     const employees = empRes.data;
 
     // Fetch monthly workings for the fiscal year
@@ -55,7 +68,11 @@ const fetchData = async () => {
     }
 
     const workPromises = monthsToFetch.map(d =>
-        axios.get(`${API_BASE}/monthly-workings?year=${d.year}&month=${d.month}`).catch(() => ({ data: [] }))
+        callKotApi('/monthly-workings', { date: `${d.year}-${String(d.month).padStart(2, '0')}` })
+            .catch(err => {
+                console.warn(`Failed to fetch data for ${d.year}-${d.month}:`, err.message);
+                return { data: [] };
+            })
     );
     const workResults = await Promise.all(workPromises);
     const monthlyData = workResults.flatMap(r => r.data || []);
