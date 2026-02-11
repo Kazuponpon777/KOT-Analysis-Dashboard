@@ -10,7 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Trust proxy (Required for Vercel/Heroku/Render)
-app.set('trust proxy', 1);
+// Use 'true' to support multiple proxy layers if Vercel changes infrastructure
+app.set('trust proxy', true);
 
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
@@ -18,12 +19,12 @@ app.use(express.json());
 
 // Session Configuration (Stateless / Cookie-based)
 app.use(cookieSession({
-    name: 'kot-session',
+    name: 'kot-session-v3', // Changed name to invalidate old cookies
     keys: [process.env.SESSION_SECRET || 'secret-key'],
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    // secure: true requires correct trust proxy setup. Force false for stability on Vercel.
-    secure: false,
-    sameSite: 'lax',
+    // Secure: true requires https. Vercel is always https.
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax', // 'lax' prevents CSRF but allows navigation
     httpOnly: true
 }));
 
