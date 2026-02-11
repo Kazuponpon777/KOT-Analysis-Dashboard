@@ -7,14 +7,31 @@ function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('kot-theme') || 'light';
   });
-  const [authenticated, setAuthenticated] = useState(null); // null = checking
+  const [authenticated, setAuthenticated] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Check auth status on mount
   useEffect(() => {
-    fetch('/api/auth/status', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => setAuthenticated(data.authenticated))
-      .catch(() => setAuthenticated(false));
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/status', {
+          // Important: Send credentials to check session cookie
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.authenticated) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+      } catch (e) {
+        setAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
   useEffect(() => {
@@ -31,12 +48,16 @@ function App() {
   };
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-    setAuthenticated(false);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      setAuthenticated(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   // Loading check
-  if (authenticated === null) {
+  if (loading) {
     return (
       <div style={{
         minHeight: '100vh',
