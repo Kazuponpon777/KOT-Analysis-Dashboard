@@ -162,6 +162,33 @@ const Login = ({ onLogin }) => {
                 }}>
                     🔒 このシステムは権限のある方のみ利用できます
                 </p>
+
+                {/* Debug Button */}
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <button
+                        type="button"
+                        onClick={async () => {
+                            try {
+                                const res = await fetch('/api/auth/debug', { credentials: 'include' });
+                                const data = await res.json();
+                                alert(JSON.stringify(data, null, 2));
+                            } catch (e) {
+                                alert('Debug fetch failed: ' + e.message);
+                            }
+                        }}
+                        style={{
+                            background: 'transparent',
+                            border: '1px solid #e5e7eb',
+                            color: '#6b7280',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            fontSize: '0.7rem',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        🛠️ 接続診断
+                    </button>
+                </div>
             </div>
         </div>
     );
