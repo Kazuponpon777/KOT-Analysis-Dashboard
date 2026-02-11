@@ -4,6 +4,7 @@ const Login = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [debugInfo, setDebugInfo] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,6 +28,17 @@ const Login = ({ onLogin }) => {
             setError('サーバーに接続できません');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDebug = async () => {
+        try {
+            const res = await fetch('/api/auth/debug', { credentials: 'include' });
+            const data = await res.json();
+            setDebugInfo(data);
+            console.log('Debug Info:', data);
+        } catch (e) {
+            setDebugInfo({ error: e.message });
         }
     };
 
@@ -163,19 +175,11 @@ const Login = ({ onLogin }) => {
                     🔒 このシステムは権限のある方のみ利用できます
                 </p>
 
-                {/* Debug Button */}
+                {/* Debug Section */}
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <button
                         type="button"
-                        onClick={async () => {
-                            try {
-                                const res = await fetch('/api/auth/debug', { credentials: 'include' });
-                                const data = await res.json();
-                                alert(JSON.stringify(data, null, 2));
-                            } catch (e) {
-                                alert('Debug fetch failed: ' + e.message);
-                            }
-                        }}
+                        onClick={handleDebug}
                         style={{
                             background: 'transparent',
                             border: '1px solid #e5e7eb',
@@ -183,11 +187,33 @@ const Login = ({ onLogin }) => {
                             padding: '4px 8px',
                             borderRadius: '4px',
                             fontSize: '0.7rem',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            marginBottom: '10px'
                         }}
                     >
-                        🛠️ 接続診断
+                        🛠️ 接続診断 (クリック後ここに表示)
                     </button>
+
+                    {debugInfo && (
+                        <div style={{
+                            textAlign: 'left',
+                            backgroundColor: '#f3f4f6',
+                            padding: '10px',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            overflowX: 'auto',
+                            marginTop: '10px',
+                            border: '1px solid #e5e7eb',
+                            color: '#374151',
+                            fontFamily: 'monospace',
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-all'
+                        }}>
+                            <pre style={{ margin: 0 }}>
+                                {JSON.stringify(debugInfo, null, 2)}
+                            </pre>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
