@@ -21,11 +21,26 @@ app.use(cookieSession({
     name: 'kot-session',
     keys: [process.env.SESSION_SECRET || 'secret-key'],
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    // secure: true requires https. Vercel is https, but trust proxy must be correct.
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax', // 'lax' is safer and sufficient for same-origin
+    // secure: true requires correct trust proxy setup. Force false for stability on Vercel.
+    secure: false,
+    sameSite: 'lax',
     httpOnly: true
 }));
+
+// Debug Endpoint (Check session headers)
+app.get('/api/auth/debug', (req, res) => {
+    res.json({
+        session: req.session,
+        authenticated: req.session ? req.session.authenticated : 'no-session',
+        protocol: req.protocol,
+        secure: req.secure,
+        trustProxy: app.get('trust proxy'),
+        headers: {
+            host: req.headers['host'],
+            'x-forwarded-proto': req.headers['x-forwarded-proto']
+        }
+    });
+});
 
 // ================================================================
 // Auth Routes
