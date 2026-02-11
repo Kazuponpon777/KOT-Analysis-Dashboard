@@ -106,9 +106,9 @@ const Dashboard = () => {
             }
 
             const [empRes, ...workResponses] = await Promise.all([
-                fetchWithRetry('http://localhost:3001/api/employees'),
+                fetchWithRetry('/api/employees'),
                 ...monthsToFetch.map(d =>
-                    fetchWithRetry(`http://localhost:3001/api/monthly-workings?year=${d.year}&month=${d.month}`)
+                    fetchWithRetry(`/api/monthly-workings?year=${d.year}&month=${d.month}`)
                 )
             ]);
 
