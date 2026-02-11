@@ -21,8 +21,9 @@ app.use(cookieSession({
     name: 'kot-session',
     keys: [process.env.SESSION_SECRET || 'secret-key'],
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: process.env.NODE_ENV === 'production', // true on Vercel
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site (if needed) or 'lax'
+    // secure: true requires https. Vercel is https, but trust proxy must be correct.
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax', // 'lax' is safer and sufficient for same-origin
     httpOnly: true
 }));
 
