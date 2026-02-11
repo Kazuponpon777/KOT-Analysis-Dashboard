@@ -19,11 +19,11 @@ app.use(express.json());
 
 // Session Configuration (Stateless / Cookie-based)
 app.use(cookieSession({
-    name: 'kot-session-v3', // Changed name to invalidate old cookies
+    name: 'kot-session-v4', // Changed name again to invalidate old cookies
     keys: [process.env.SESSION_SECRET || 'secret-key'],
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    // Secure: true requires https. Vercel is always https.
-    secure: process.env.NODE_ENV === 'production',
+    // Force secure: false to ensure cookie is set regardless of protocol detection
+    secure: false, // This is the safest option for stability
     sameSite: 'lax', // 'lax' prevents CSRF but allows navigation
     httpOnly: true
 }));
