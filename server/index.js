@@ -43,6 +43,16 @@ app.get('/api/auth/debug', (req, res) => {
     });
 });
 
+// Check outgoing IP (for KOT API IP whitelisting)
+app.get('/api/auth/outgoing-ip', async (req, res) => {
+    try {
+        const response = await axios.get('https://api.ipify.org?format=json');
+        res.json({ outgoingIp: response.data.ip });
+    } catch (e) {
+        res.json({ error: e.message });
+    }
+});
+
 // ================================================================
 // Auth Routes
 // ================================================================
